@@ -78,6 +78,21 @@ const getTaskById = async (req, res) => {
     }
   };
 
+  const deleteTask = async (req, res) => {
+    try {
+      const { id } = req.params; 
+      const deletedTask = await tasksdata.findByIdAndDelete(id);
+  
+      if (!deletedTask) {
+        return res.status(404).json({ error: "Task not found" }); 
+      }
+  
+      res.status(200).json({ message: "Task deleted successfully", data: deletedTask });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to delete task: " + error.message });
+    }
+  };
 
 
-module.exports = { createTask ,editTask, getAllTasks, getTaskById};
+module.exports = { createTask ,editTask, getAllTasks, getTaskById, deleteTask};
