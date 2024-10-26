@@ -9,15 +9,12 @@ const tasksDataSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     startTime: {
       type: String,
-      required: true,
     },
     endTime: {
       type: String,
-      required: true,
     },
     date: {
       type: Number,
@@ -27,6 +24,11 @@ const tasksDataSchema = new mongoose.Schema(
       type: String,
       enum: ["completed", "pending"], 
       default: "pending",
+    },
+    priority: {
+      type: String,
+      enum: ["low", "medium", "high"], 
+      default: "medium", 
     },
   },
   { collection: "tasksdata" } 

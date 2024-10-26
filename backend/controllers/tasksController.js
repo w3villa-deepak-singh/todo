@@ -3,7 +3,7 @@ const tasksdata = require("../models/tasksModel");
 
 const createTask = async (req, res) => {
   try {
-    const { title, description, startTime, endTime, date, status } = req.body;
+    const { title, description, startTime, endTime, date, status,priority } = req.body;
 
     const newTask = new tasksdata({
       title,
@@ -12,6 +12,7 @@ const createTask = async (req, res) => {
       endTime,
       date: date || Math.floor(Date.now() / 1000),
       status: status || "pending",
+      priority: priority || "medium",
     });
 
 
@@ -26,7 +27,7 @@ const createTask = async (req, res) => {
 const editTask = async (req, res) => {
     try {
       const { id } = req.params; 
-      const { title, description, startTime, endTime, date, status } = req.body;
+      const { title, description, startTime, endTime, date, status, priority } = req.body;
   
       const updatedTask = await tasksdata.findByIdAndUpdate(
         id,
@@ -37,6 +38,7 @@ const editTask = async (req, res) => {
           endTime,
           date: date || Math.floor(Date.now() / 1000),
           status: status || "pending",
+          priority: priority || "medium",
         },
         { new: true } 
       );
