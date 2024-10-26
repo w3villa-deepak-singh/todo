@@ -78,7 +78,7 @@ const getTaskById = async (req, res) => {
     }
   };
 
-  const deleteTask = async (req, res) => {
+const deleteTask = async (req, res) => {
     try {
       const { id } = req.params; 
       const deletedTask = await tasksdata.findByIdAndDelete(id);
@@ -94,5 +94,61 @@ const getTaskById = async (req, res) => {
     }
   };
 
+const getCompletedCount = async (req, res) => {
+    try {
+      const completedCount = await tasksdata.countDocuments({ status: "completed" });   
+      res.status(200).json({ message: "Completed task count retrieved successfully", completed_count: completedCount });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to retrieve completed task count: " + error.message });
+    }
+  };
 
-module.exports = { createTask ,editTask, getAllTasks, getTaskById, deleteTask};
+const getPendingCount = async (req, res) => {
+    try {
+      const pendingCount = await tasksdata.countDocuments({ status: "pending" });   
+      res.status(200).json({ message: "Pending task count retrieved successfully", pending_count: pendingCount });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to retrieve pending task count: " + error.message });
+    }
+  };
+
+const getTasksByDate = async (req, res) => {
+    try {
+        const { date } = req.params; 
+        console.log("Received date parameter (epoch):", date);
+
+
+      const targetDate = new Date(date * 1000);
+      const startOfDay = new Date(targetDate.setUTCHours(0, 0, 0, 0)); 
+      const endOfDay = new Date(targetDate.setUTCHours(23, 59, 59, 999)); 
+  
+     
+      console.log("Start of day:", startOfDay);
+      console.log("End of day:", endOfDay);
+      
+      const tasks = await tasksdata.find({
+        date: { 
+          $gte: Math.floor(startOfDay.getTime() / 1000), 
+          $lt: Math.floor(endOfDay.getTime() / 1000) 
+        }
+      });
+    
+        res.status(200).json({ message: "Tasks fetched successfully", data: tasks });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to retrieve tasks by date: " + error.message });
+      }
+};
+
+module.exports = { 
+    createTask ,
+    editTask, 
+    getAllTasks, 
+    getTaskById,
+    deleteTask, 
+    getCompletedCount,
+    getPendingCount,
+    getTasksByDate
+};
